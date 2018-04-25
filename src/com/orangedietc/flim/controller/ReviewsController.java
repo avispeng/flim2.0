@@ -20,6 +20,7 @@ import com.orangedietc.flim.po.MoviesCustom;
 import com.orangedietc.flim.po.ReviewsCustom;
 import com.orangedietc.flim.po.ReviewsQueryVo;
 import com.orangedietc.flim.po.UsersCustom;
+import com.orangedietc.flim.service.MoviesService;
 import com.orangedietc.flim.service.ReviewsService;
 import com.orangedietc.flim.service.UsersService;
 
@@ -33,6 +34,9 @@ public class ReviewsController {
 	@Autowired
 	private UsersService usersService;
 	
+	@Autowired
+	private MoviesService moviesService;
+	
 	@RequestMapping(value="/editReview")
 	public ModelAndView editReview(HttpServletRequest request, Integer movieId, String username) throws Exception {
 		
@@ -42,8 +46,7 @@ public class ReviewsController {
 		
 /*		ReviewsCustom reviewsCustom = (ReviewsCustom) modelAndView.getModelMap().getOrDefault("reviewsCustom", null);*/
 		ReviewsQueryVo reviewsQueryVo = new ReviewsQueryVo();
-		MoviesCustom moviesCustom = new MoviesCustom();
-		moviesCustom.setMovieId(movieId);
+		MoviesCustom moviesCustom = moviesService.findMovieById(movieId);
 		reviewsQueryVo.setMoviesCustom(moviesCustom);
 		reviewsQueryVo.setUsersCustom(usersCustom);
 		ReviewsCustom reviewsCustom = reviewsService.findReviewByUserAndMovie(reviewsQueryVo);
@@ -53,7 +56,8 @@ public class ReviewsController {
 			reviewsCustom = new ReviewsCustom();
 			reviewsCustom.setMovieId(movieId);
 			reviewsCustom.setUserid(usersCustom.getUserid());
-
+			reviewsCustom.setUsername(username);
+			reviewsCustom.setMovieTitle(moviesCustom.getMovieTitle());
 		}
 		// else edit existing review
 		modelAndView.addObject("reviewsCustom", reviewsCustom);

@@ -13,11 +13,12 @@ CREATE TABLE IF NOT EXISTS users
   PRIMARY KEY (`userid`)
 );
 
-CREATE TABLE IF NOT EXISTS reviews
-(
+CREATE TABLE IF NOT EXISTS reviews (
   `review_id` int(11) NOT NULL AUTO_INCREMENT,
   `movie_id` int(11) NOT NULL,
+  `movie_title` varchar(250) NOT NULL,
   `userid` int(11) NOT NULL,
+  `username` char(20) NOT NULL,
   `review_title` varchar(130) DEFAULT NULL,
   `review` text NOT NULL,
   `thumb_up` int(11) NOT NULL,

@@ -80,5 +80,19 @@ current user: ${username },
 </td>
 </tr>
 </table>
+<h3>reviews of ${moviesCustom.movieTitle }</h3>
+<table width="100%" border=1>
+<c:if test="${reviewsCustomList!=null }">
+<c:forEach items="${reviewsCustomList }" var="oneReview">
+<tr>
+<td>${oneReview.username }</td>
+<td>
+<p>${oneReview.reviewTitle }</p>
+<span>${oneReview.review }</span>
+</td>
+</tr>
+</c:forEach>
+</c:if>
+</table>
 </body>
 </html>

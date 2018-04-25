@@ -21,7 +21,9 @@ current user: ${username },
 </c:choose>
 <form id="editReviewForm" action="${pageContext.request.contextPath }/reviews/editReviewSubmit.action" method="post">
 <input type="hidden" name="movieId" value="${reviewsCustom.movieId }" />
+<input type="hidden" name="movieTitle" value="${reviewsCustom.movieTitle }" />
 <input type="hidden" name="userid" value="${reviewsCustom.userid }" />
+<input type="hidden" name="username" value="${reviewsCustom.username }" />
 <input type="hidden" name="reviewId" value="${reviewsCustom.reviewId }" />
 <p><input type="text" name="reviewTitle" value="${reviewsCustom.reviewTitle }"/></p>
 <select name="rating">

@@ -1,10 +1,13 @@
 package com.orangedietc.flim.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.orangedietc.flim.comparator.DatetimeReverseComparator;
 import com.orangedietc.flim.mapper.ReviewsCustomMapper;
 import com.orangedietc.flim.mapper.ReviewsMapper;
 import com.orangedietc.flim.po.Reviews;
@@ -42,14 +45,29 @@ public class ReviewsServiceImpl implements ReviewsService {
 	@Override
 	public List<ReviewsCustom> findReviewsListByMovie(ReviewsQueryVo reviewsQueryVo) throws Exception {
 		
+		Integer movieId = reviewsQueryVo.getMoviesCustom().getMovieId();
+		ReviewsExample reviewsExample = new ReviewsExample();
+		reviewsExample.createCriteria().andMovieIdEqualTo(movieId);
+		List<Reviews> reviewsList = reviewsMapper.selectByExampleWithBLOBs(reviewsExample);
 		
-		return reviewsCustomMapper.findReviewsListByMovie(reviewsQueryVo);
+		List<ReviewsCustom> reviewsCustomList = new ArrayList<ReviewsCustom>();
+		for(Reviews reviews : reviewsList) {
+			ReviewsCustom reviewsCustom = new ReviewsCustom();
+			BeanUtils.copyProperties(reviews, reviewsCustom);
+			reviewsCustomList.add(reviewsCustom);
+		}
+		Collections.sort(reviewsCustomList, new DatetimeReverseComparator());
+		return reviewsCustomList;
+		
+		//return reviewsCustomMapper.findReviewsListByMovie(reviewsQueryVo);
 	}
 
 	@Override
 	public List<ReviewsCustom> findReviewsListByUser(ReviewsQueryVo reviewsQueryVo) throws Exception {
 		
-		return reviewsCustomMapper.findReviewsListByUser(reviewsQueryVo);
+		List<ReviewsCustom> reviewsCustomList = reviewsCustomMapper.findReviewsListByUser(reviewsQueryVo);
+		Collections.sort(reviewsCustomList, new DatetimeReverseComparator());
+		return reviewsCustomList;
 	}
 
 	@Override

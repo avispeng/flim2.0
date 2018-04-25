@@ -150,6 +150,13 @@ public class MoviesController {
 		String[] genres = objectMapper.readValue(moviesCustom.getGenres(), String[].class);
 		moviesCustom.setGenresArray(genres);
 		
+		// reviews list
+		ReviewsQueryVo reviewsListQueryVo = new ReviewsQueryVo();
+		reviewsListQueryVo.setMoviesCustom(moviesCustom);
+		List<ReviewsCustom> reviewsCustomList = reviewsService.findReviewsListByMovie(reviewsListQueryVo);
+		if(reviewsCustomList != null && reviewsCustomList.size() > 0)
+			modelAndView.addObject("reviewsCustomList", reviewsCustomList);
+		
 		modelAndView.addObject("moviesCustom", moviesCustom);
 		modelAndView.setViewName("movies/getMovie");
 		
