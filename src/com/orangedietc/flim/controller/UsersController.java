@@ -22,7 +22,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.orangedietc.flim.controller.validation.ValidGroup2;
+import com.orangedietc.flim.po.ReviewsCustom;
+import com.orangedietc.flim.po.ReviewsQueryVo;
 import com.orangedietc.flim.po.UsersCustom;
+import com.orangedietc.flim.service.ReviewsService;
 import com.orangedietc.flim.service.UsersService;
 
 @Controller
@@ -31,6 +34,9 @@ public class UsersController {
 	
 	@Autowired
 	private UsersService usersService;
+	
+	@Autowired
+	private ReviewsService reviewsService;
 	
 	static final String ALPHABETNUMERIC = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 	static SecureRandom rnd = new SecureRandom();
@@ -153,7 +159,7 @@ public class UsersController {
 		// business logic validation succeeded. add to session
 		session.setAttribute("username", usersCustom.getUsername());
 		
-		return "redirect:/movies/queryMovies.action";
+		return "redirect:/users/getHomePage.action?userid="+usersCustomFromDb.getUserid();
 		
 	}
 	
@@ -161,6 +167,27 @@ public class UsersController {
 	public String logout(HttpSession session) throws Exception {
 		session.invalidate();
 		return "redirect:/movies/queryMovies.action";
+	}
+	
+	@RequestMapping(value="/getHomePage", method=RequestMethod.GET)
+	public ModelAndView getHomePage(Integer userid, HttpServletRequest request, HttpSession session) throws Exception {
+		
+		ModelAndView modelAndView = new ModelAndView();
+		ReviewsQueryVo reviewsQueryVo = new ReviewsQueryVo();
+		UsersCustom usersCustom = usersService.findUserById(userid);
+		reviewsQueryVo.setUsersCustom(usersCustom);
+		List<ReviewsCustom> reviewsList = reviewsService.findReviewsListByUser(reviewsQueryVo);
+		
+		if(reviewsList != null && reviewsList.size() > 0) {
+			modelAndView.addObject("reviewsList", reviewsList);
+		}
+		
+		modelAndView.addObject("usersCustom", usersCustom);
+		
+		modelAndView.setViewName("users/homePage");
+		
+		return modelAndView;
+		
 	}
 	
 	@ModelAttribute("citiesList")
@@ -176,6 +203,7 @@ public class UsersController {
 		citiesList.add("Cleveland");
 		
 		Collections.sort(citiesList);
+		citiesList.add("Others");
 		return citiesList;
 	}
 
