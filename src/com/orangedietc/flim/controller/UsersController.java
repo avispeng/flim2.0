@@ -152,6 +152,7 @@ public class UsersController {
 		
 		// business logic validation succeeded. add to session
 		session.setAttribute("username", usersCustom.getUsername());
+		
 		return "redirect:/movies/queryMovies.action";
 		
 	}

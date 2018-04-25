@@ -65,6 +65,20 @@ current user: ${username },
 <td>summary: </td>
 <td>${moviesCustom.summary }</td>
 </tr>
+<tr>
+<td>your review: </td>
+<td>
+<c:if test="${reviewsCustom != null }">
+<p>title: ${reviewsCustom.reviewTitle }</p>
+<p>your rating: ${reviewsCustom.rating }</p>
+<span>${reviewsCustom.review }</span>
+</c:if>
+<br>
+<c:if test="${username != null }">
+<a href="${pageContext.request.contextPath }/reviews/editReview.action?movieId=${moviesCustom.movieId}&username=${username}">add or edit your review</a>
+</c:if>
+</td>
+</tr>
 </table>
 </body>
 </html>

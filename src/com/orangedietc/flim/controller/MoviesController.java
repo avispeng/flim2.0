@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,7 +22,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.orangedietc.flim.po.MoviesCustom;
 import com.orangedietc.flim.po.MoviesQueryVo;
+import com.orangedietc.flim.po.ReviewsCustom;
+import com.orangedietc.flim.po.ReviewsQueryVo;
+import com.orangedietc.flim.po.UsersCustom;
 import com.orangedietc.flim.service.MoviesService;
+import com.orangedietc.flim.service.ReviewsService;
+import com.orangedietc.flim.service.UsersService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 /*import com.fasterxml.jackson.databind.type.TypeFactory;*/
 import com.orangedietc.flim.controller.validation.ValidGroup1;
@@ -33,6 +39,13 @@ public class MoviesController {
 	
 	@Autowired
 	private MoviesService moviesService;
+	
+	@Autowired
+	private ReviewsService reviewsService;
+	
+	@Autowired
+	private UsersService usersService;
+	
 	
 	@RequestMapping("/queryMovies")
 	public ModelAndView queryMovies(HttpServletRequest request, MoviesQueryVo moviesQueryVo) throws Exception {
@@ -110,14 +123,29 @@ public class MoviesController {
 	}
 	
 	@RequestMapping(value="/getMovie", method=RequestMethod.GET)
-	public ModelAndView getMovie(Integer id, HttpServletRequest request) throws Exception {
+	public ModelAndView getMovie(Integer id, HttpServletRequest request, HttpSession session) throws Exception {
 		
 		ModelAndView modelAndView = new ModelAndView();
+		
 		MoviesCustom moviesCustom = moviesService.findMovieById(id);
 		if(moviesCustom == null) {
 			throw new CustomException("The movie doesn't exist!");
 		}
 		
+		// get logged-in user's review
+		String username = (String) session.getAttribute("username");
+		if(username != null && username.length() > 0) {
+			ReviewsQueryVo reviewsQueryVo = new ReviewsQueryVo();
+			reviewsQueryVo.setMoviesCustom(moviesCustom);
+			UsersCustom usersCustom = usersService.findUserByName(username);
+			reviewsQueryVo.setUsersCustom(usersCustom);
+			ReviewsCustom reviewsCustom = reviewsService.findReviewByUserAndMovie(reviewsQueryVo);
+			if(reviewsCustom != null) {
+				modelAndView.addObject("reviewsCustom", reviewsCustom);
+			}
+		}
+		
+		// process genres
 		ObjectMapper objectMapper = new ObjectMapper();
 		String[] genres = objectMapper.readValue(moviesCustom.getGenres(), String[].class);
 		moviesCustom.setGenresArray(genres);
@@ -126,9 +154,30 @@ public class MoviesController {
 		modelAndView.setViewName("movies/getMovie");
 		
 		return modelAndView;
-		
-		
 	}
+	
+/*	@RequestMapping(value="/editReview", method=RequestMethod.GET)
+	public ModelAndView editReview(Model model, Integer movieId, String username) throws Exception {
+		
+		ModelAndView modelAndView = new ModelAndView("movies/editReview", "model", model);
+		MoviesCustom moviesCustom = (MoviesCustom) modelAndView.getModelMap().get("moviesCustom");
+		UsersCustom usersCustom = usersService.findUserByName(username);
+		
+		ReviewsCustom reviewsCustom = (ReviewsCustom) modelAndView.getModelMap().getOrDefault("reviewsCustom", null);
+		
+		if(reviewsCustom == null) {
+			// add new review
+			reviewsCustom = new ReviewsCustom();
+			reviewsCustom.setMovieId(movieId);
+			reviewsCustom.setUserid(usersCustom.getUserid());
+			modelAndView.addObject("reviewsCustom", reviewsCustom);
+		} else {
+			// edit existing review
+		}
+		return modelAndView;
+	}*/
+	
+	
 	
 	@ModelAttribute("allGenres")
 	public List<String> getAllGenres() {

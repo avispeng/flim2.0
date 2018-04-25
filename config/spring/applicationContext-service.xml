@@ -25,4 +25,7 @@
 <!-- users service -->
 <bean id="usersService" class="com.orangedietc.flim.service.impl.UsersServiceImpl" />
 
+<!-- reviews service -->
+<bean id="reviewsService" class="com.orangedietc.flim.service.impl.ReviewsServiceImpl" />
+
 </beans>
