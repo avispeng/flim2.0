@@ -65,7 +65,19 @@ public class ReviewsServiceImpl implements ReviewsService {
 	@Override
 	public List<ReviewsCustom> findReviewsListByUser(ReviewsQueryVo reviewsQueryVo) throws Exception {
 		
-		List<ReviewsCustom> reviewsCustomList = reviewsCustomMapper.findReviewsListByUser(reviewsQueryVo);
+		Integer userid = reviewsQueryVo.getUsersCustom().getUserid();
+		ReviewsExample reviewsExample = new ReviewsExample();
+		reviewsExample.createCriteria().andUseridEqualTo(userid);
+		List<Reviews> reviewsList = reviewsMapper.selectByExampleWithBLOBs(reviewsExample);
+		
+		List<ReviewsCustom> reviewsCustomList = new ArrayList<ReviewsCustom>();
+		for(Reviews reviews : reviewsList) {
+			ReviewsCustom reviewsCustom = new ReviewsCustom();
+			BeanUtils.copyProperties(reviews, reviewsCustom);
+			reviewsCustomList.add(reviewsCustom);
+		}
+		
+//		List<ReviewsCustom> reviewsCustomList = reviewsCustomMapper.findReviewsListByUser(reviewsQueryVo);
 		Collections.sort(reviewsCustomList, new DatetimeReverseComparator());
 		return reviewsCustomList;
 	}

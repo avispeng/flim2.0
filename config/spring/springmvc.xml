@@ -23,13 +23,14 @@
     <mvc:annotation-driven conversion-service="conversionService"
     validator="validator"></mvc:annotation-driven>
     
-<!--     <mvc:interceptors>
-    	login validation interceptor
+    <mvc:interceptors>
+    	<!-- login validation interceptor -->
     	<mvc:interceptor>
-    	<mvc:mapping path="/**"/>
+    	<!-- <mvc:mapping path="/**"/> -->
+    	<mvc:mapping path="/comments/**"/>
     	<bean class="com.orangedietc.flim.interceptor.LoginInterceptor"></bean>
     	</mvc:interceptor>
-    </mvc:interceptors> -->
+    </mvc:interceptors>
     
 	<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
 		<!-- converter -->

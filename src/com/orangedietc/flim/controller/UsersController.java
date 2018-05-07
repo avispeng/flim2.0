@@ -29,18 +29,18 @@ import com.orangedietc.flim.service.ReviewsService;
 import com.orangedietc.flim.service.UsersService;
 
 @Controller
-@RequestMapping(value="/users", method={RequestMethod.POST, RequestMethod.GET})
+@RequestMapping(value = "/users", method = { RequestMethod.POST, RequestMethod.GET })
 public class UsersController {
-	
+
 	@Autowired
 	private UsersService usersService;
-	
+
 	@Autowired
 	private ReviewsService reviewsService;
-	
+
 	static final String ALPHABETNUMERIC = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 	static SecureRandom rnd = new SecureRandom();
-	
+
 	private String randomString(int len) {
 		/**
 		 * generate a salt
@@ -50,35 +50,39 @@ public class UsersController {
 			sb.append(ALPHABETNUMERIC.charAt(rnd.nextInt(ALPHABETNUMERIC.length())));
 		return sb.toString();
 	}
-	
-	@RequestMapping(value="/register", method=RequestMethod.GET)
+
+	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public ModelAndView register(HttpServletRequest request) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		UsersCustom usersCustom = new UsersCustom();
 		modelAndView.addObject("usersCustom", usersCustom);
 		modelAndView.setViewName("users/register");
-		
+
 		return modelAndView;
 	}
-	
-	@RequestMapping(value="/registerSubmit", method=RequestMethod.POST)
-	public String registerSubmit(Model model, @Validated(value= {ValidGroup2.class}) UsersCustom usersCustom,
+
+	@RequestMapping(value = "/registerSubmit", method = RequestMethod.POST)
+	public String registerSubmit(Model model, @Validated(value = { ValidGroup2.class }) UsersCustom usersCustom,
 			BindingResult bindingResult) throws Exception {
 		// validation
-		if(bindingResult.hasErrors()) {
+		if (bindingResult.hasErrors()) {
 			List<ObjectError> allErrors = bindingResult.getAllErrors();
-			
+
 			model.addAttribute("allErrors", allErrors);
-			
+
 			return "users/register";
 		}
-		
+
 		// determine whether the user already exists
 		String username = usersCustom.getUsername();
 		UsersCustom existedUser = usersService.findUserByName(username);
-		
+
 		if (existedUser == null || existedUser.getUserid() == null) {
 			// it is valid to register
+			// usersCustom.setGender(Integer.parseInt(usersCustom.getGender()));
+			if (usersCustom.getNickname() == null || usersCustom.getNickname().length() == 0) {
+				usersCustom.setNickname(username);
+			}
 			String password = usersCustom.getPassword();
 			String salt = randomString(8);
 			String stringToEncrypt = password + salt;
@@ -92,7 +96,7 @@ public class UsersController {
 			usersService.InsertUser(usersCustom);
 			// register succeeded, return to login page
 			return "redirect:/users/login.action";
-			
+
 		} else {
 			// failed. username already exists.
 			ObjectError error = new ObjectError("register failed", "username already exists!");
@@ -103,32 +107,33 @@ public class UsersController {
 		}
 
 	}
-	
-	@RequestMapping(value="/login", method=RequestMethod.GET)
+
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public ModelAndView login(HttpServletRequest request) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		UsersCustom usersCustom = new UsersCustom();
 		modelAndView.addObject("usersCustom", usersCustom);
 		modelAndView.setViewName("users/login");
-		
+
 		return modelAndView;
 	}
-	
-	@RequestMapping(value="/loginSubmit", method=RequestMethod.POST)
-	public String loginSubmit(HttpSession session, Model model, @Validated(value= {ValidGroup2.class}) UsersCustom usersCustom,
-			BindingResult bindingResult) throws Exception {
+
+	@RequestMapping(value = "/loginSubmit", method = RequestMethod.POST)
+	public String loginSubmit(HttpSession session, Model model,
+			@Validated(value = { ValidGroup2.class }) UsersCustom usersCustom, BindingResult bindingResult)
+			throws Exception {
 		// validation
-		if(bindingResult.hasErrors()) {
+		if (bindingResult.hasErrors()) {
 			List<ObjectError> allErrors = bindingResult.getAllErrors();
-			
+
 			model.addAttribute("allErrors", allErrors);
-			
+
 			return "users/login";
 		}
-		
+
 		// validate the username
 		UsersCustom usersCustomFromDb = usersService.findUserByName(usersCustom.getUsername());
-		if(usersCustomFromDb == null || usersCustomFromDb.getUserid() == null) {
+		if (usersCustomFromDb == null || usersCustomFromDb.getUserid() == null) {
 			// username doesn't exist
 			ObjectError error = new ObjectError("login failed", "username doesn't exists!");
 			List<ObjectError> allErrors = new ArrayList<ObjectError>();
@@ -138,16 +143,16 @@ public class UsersController {
 		}
 		// validate the password
 		String password = usersCustom.getPassword();
-		
+
 		String hashedPwdFromDb = usersCustomFromDb.getHashedPwd();
 		String salt = usersCustomFromDb.getSalt();
 		String stringToEncrypt = password + salt;
-		
+
 		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 		messageDigest.update(stringToEncrypt.getBytes());
 		String hashedpwd = Hex.encodeHexString(messageDigest.digest());
-		
-		if(!hashedpwd.equals(hashedPwdFromDb)) {
+
+		if (!hashedpwd.equals(hashedPwdFromDb)) {
 			// wrong password
 			ObjectError error = new ObjectError("login failed", "wrong password!");
 			List<ObjectError> allErrors = new ArrayList<ObjectError>();
@@ -155,41 +160,42 @@ public class UsersController {
 			model.addAttribute("allErrors", allErrors);
 			return "users/login";
 		}
-		
+
 		// business logic validation succeeded. add to session
 		session.setAttribute("username", usersCustom.getUsername());
-		
-		return "redirect:/users/getHomePage.action?userid="+usersCustomFromDb.getUserid();
-		
+		session.setAttribute("userid", usersCustomFromDb.getUserid());
+
+		return "redirect:/users/getHomePage.action?userid=" + usersCustomFromDb.getUserid();
+
 	}
-	
-	@RequestMapping(value="/logout")
+
+	@RequestMapping(value = "/logout")
 	public String logout(HttpSession session) throws Exception {
 		session.invalidate();
 		return "redirect:/movies/queryMovies.action";
 	}
-	
-	@RequestMapping(value="/getHomePage", method=RequestMethod.GET)
+
+	@RequestMapping(value = "/getHomePage", method = RequestMethod.GET)
 	public ModelAndView getHomePage(Integer userid, HttpServletRequest request, HttpSession session) throws Exception {
-		
+
 		ModelAndView modelAndView = new ModelAndView();
 		ReviewsQueryVo reviewsQueryVo = new ReviewsQueryVo();
 		UsersCustom usersCustom = usersService.findUserById(userid);
 		reviewsQueryVo.setUsersCustom(usersCustom);
 		List<ReviewsCustom> reviewsList = reviewsService.findReviewsListByUser(reviewsQueryVo);
-		
-		if(reviewsList != null && reviewsList.size() > 0) {
+
+		if (reviewsList != null && reviewsList.size() > 0) {
 			modelAndView.addObject("reviewsList", reviewsList);
 		}
-		
+
 		modelAndView.addObject("usersCustom", usersCustom);
-		
+
 		modelAndView.setViewName("users/homePage");
-		
+
 		return modelAndView;
-		
+
 	}
-	
+
 	@ModelAttribute("citiesList")
 	public List<String> getCitiesList() {
 		List<String> citiesList = new ArrayList<String>();
@@ -201,7 +207,7 @@ public class UsersController {
 		citiesList.add("Taipei");
 		citiesList.add("Nashville");
 		citiesList.add("Cleveland");
-		
+
 		Collections.sort(citiesList);
 		citiesList.add("Others");
 		return citiesList;

@@ -48,9 +48,64 @@ current user: ${username },
 <tr>
 <td>genres: </td>
 <td>
+<c:if test="${moviesCustom.genresArray!=null }">
 	<c:forEach items="${moviesCustom.genresArray }" var="genre">
 		${genre } 
 	</c:forEach>
+</c:if>
+</td>
+</tr>
+<tr>
+<td>cast: </td>
+<td>
+directors:
+<c:if test="${moviesCustom.directorsArray!=null }">
+	<c:forEach items="${moviesCustom.directorsArray }" var="director">
+		${director }
+	</c:forEach>
+</c:if><br>
+writers:
+<c:if test="${moviesCustom.writersArray!=null }">
+	<c:forEach items="${moviesCustom.writersArray }" var="writer">
+		${writer }
+	</c:forEach>
+</c:if><br>
+actors: 
+<c:if test="${moviesCustom.starsArray!=null }">
+	<c:forEach items="${moviesCustom.starsArray }" var="star">
+		${star }
+	</c:forEach>
+</c:if>
+</td>
+</tr>
+<tr>
+<td>languages: </td>
+<td>
+<c:if test="${moviesCustom.languagesArray != null }">
+<c:forEach items="${moviesCustom.languagesArray }" var="language">
+	${language }
+</c:forEach>
+</c:if>
+</td>
+</tr>
+<tr>
+<td>countries: </td>
+<td>
+<c:if test="${moviesCustom.countriesArray!=null }">
+<c:forEach items="${moviesCustom.countriesArray }" var="country">
+	${country }
+</c:forEach>
+</c:if>
+</td>
+</tr>
+<tr>
+<td>also known as: </td>
+<td>
+<c:if test="${moviesCustom.akaArray!=null }">
+<c:forEach items="${moviesCustom.akaArray }" var="aka">
+	${aka }
+</c:forEach>
+</c:if>
 </td>
 </tr>
 <tr>
@@ -87,7 +142,7 @@ current user: ${username },
 <tr>
 <td>${oneReview.username }</td>
 <td>
-<p>${oneReview.reviewTitle }</p>
+<p><a href="${pageContext.request.contextPath }/reviews/getComments.action?reviewId=${oneReview.reviewId }">${oneReview.reviewTitle }</a></p>
 <span>${oneReview.review }</span>
 </td>
 </tr>

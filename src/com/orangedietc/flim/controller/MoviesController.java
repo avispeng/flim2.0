@@ -2,6 +2,7 @@ package com.orangedietc.flim.controller;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,18 +47,48 @@ public class MoviesController {
 	@Autowired
 	private UsersService usersService;
 	
+	private void processJsonDataInMovie(MoviesCustom moviesCustom) throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		if(moviesCustom.getGenres() != null) {
+			String[] genres = objectMapper.readValue(moviesCustom.getGenres(), String[].class);
+			moviesCustom.setGenresArray(genres);
+		}
+		if(moviesCustom.getDirectors() != null) {
+			String[] directors = objectMapper.readValue(moviesCustom.getDirectors(), String[].class);
+			moviesCustom.setDirectorsArray(directors);
+		}
+		if(moviesCustom.getWriters() != null) {
+			String[] writers = objectMapper.readValue(moviesCustom.getWriters(), String[].class);
+			moviesCustom.setWritersArray(writers);
+		}
+		if(moviesCustom.getStars() != null) {
+			String[] stars = objectMapper.readValue(moviesCustom.getStars(), String[].class);
+			moviesCustom.setStarsArray(stars);
+		}
+		if(moviesCustom.getAka() != null) {
+			String[] akas = objectMapper.readValue(moviesCustom.getAka(), String[].class);
+			moviesCustom.setAkaArray(akas);
+		}
+		if(moviesCustom.getLanguages() != null) {
+			String[] languages = objectMapper.readValue(moviesCustom.getLanguages(), String[].class);
+			moviesCustom.setLanguagesArray(languages);
+		}
+		if(moviesCustom.getCountries() != null) {
+			String[] countries = objectMapper.readValue(moviesCustom.getCountries(), String[].class);
+			moviesCustom.setCountriesArray(countries);
+		}
+	}
 	
 	@RequestMapping("/queryMovies")
 	public ModelAndView queryMovies(HttpServletRequest request, MoviesQueryVo moviesQueryVo) throws Exception {
 		
 		List<MoviesCustom> moviesList = moviesService.findMoviesList(moviesQueryVo);
 		
-		// process genres
-		ObjectMapper objectMapper = new ObjectMapper();
+		
+		// process genres and profile
 /*		TypeFactory typeFactory = objectMapper.getTypeFactory();*/
 		for(MoviesCustom moviesCustom : moviesList) {
-			String[] genres = objectMapper.readValue(moviesCustom.getGenres(), String[].class);
-			moviesCustom.setGenresArray(genres);
+			processJsonDataInMovie(moviesCustom);
 /*			List<String> genresList = objectMapper.readValue(moviesCustom.getGenres(), typeFactory.constructCollectionType(List.class, String.class));*/
 		}
 		
@@ -111,15 +142,66 @@ public class MoviesController {
 				moviesCustom.setPoster("default.jpg");
 			}
 		}
+		ObjectMapper objectMapper = new ObjectMapper();
+		// process movie profile json
+		String[] directorsArray = stringToArray(moviesCustom.getDirectors());
+		String[] writersArray = stringToArray(moviesCustom.getWriters());
+		String[] starsArray = stringToArray(moviesCustom.getStars());
+		String[] akaArray = stringToArray(moviesCustom.getAka());
+		String[] languagesArray = stringToArray(moviesCustom.getLanguages());
+		String[] countriesArray = stringToArray(moviesCustom.getCountries());
+		if(directorsArray != null) {
+			String directorsJsonArray = objectMapper.writeValueAsString(directorsArray);
+			moviesCustom.setDirectors(directorsJsonArray);
+		} else {
+			moviesCustom.setDirectors(null);
+		}
+		if(writersArray != null) {
+			String writersJsonArray = objectMapper.writeValueAsString(writersArray);
+			moviesCustom.setWriters(writersJsonArray);
+		} else {
+			moviesCustom.setWriters(null);
+		}
+		if(starsArray != null) {
+			String starsJsonArray = objectMapper.writeValueAsString(starsArray);
+			moviesCustom.setStars(starsJsonArray);
+		} else {
+			moviesCustom.setStars(null);
+		}
+		if(akaArray != null) {
+			String akaJsonArray = objectMapper.writeValueAsString(akaArray);
+			moviesCustom.setAka(akaJsonArray);
+		} else {
+			moviesCustom.setAka(null);
+		}
+		if(languagesArray != null) {
+			String languagesJsonArray = objectMapper.writeValueAsString(languagesArray);
+			moviesCustom.setLanguages(languagesJsonArray);
+		} else {
+			moviesCustom.setLanguages(null);
+		}
+		if(countriesArray != null) {
+			String countriesJsonArray = objectMapper.writeValueAsString(countriesArray);
+			moviesCustom.setCountries(countriesJsonArray);
+		} else {
+			moviesCustom.setCountries(null);
+		}
 		
 		// process genres array
-		ObjectMapper objectMapper = new ObjectMapper();
 		String genresJsonArray = objectMapper.writeValueAsString(genres_array);
 		moviesCustom.setGenres(genresJsonArray);
 		
 		moviesService.insertMovie(moviesCustom);
 		
 		return "success";
+	}
+	
+	private String[] stringToArray(String s) {
+		s = s.trim();
+		if(s.length() == 0) return null;
+		String[] res = s.split(",");
+		Arrays.stream(res).map(String::trim).toArray(unused -> res);
+		return res;
 	}
 	
 	@RequestMapping(value="/getMovie", method=RequestMethod.GET)
@@ -146,9 +228,10 @@ public class MoviesController {
 		}
 		
 		// process genres
-		ObjectMapper objectMapper = new ObjectMapper();
-		String[] genres = objectMapper.readValue(moviesCustom.getGenres(), String[].class);
-		moviesCustom.setGenresArray(genres);
+//		ObjectMapper objectMapper = new ObjectMapper();
+//		String[] genres = objectMapper.readValue(moviesCustom.getGenres(), String[].class);
+//		moviesCustom.setGenresArray(genres);
+		processJsonDataInMovie(moviesCustom);
 		
 		// reviews list
 		ReviewsQueryVo reviewsListQueryVo = new ReviewsQueryVo();

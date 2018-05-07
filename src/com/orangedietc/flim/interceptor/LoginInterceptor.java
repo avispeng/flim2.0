@@ -15,10 +15,10 @@ public class LoginInterceptor implements HandlerInterceptor {
 			throws Exception {
 		
 		// get url
-		String url = request.getRequestURI();
-		if(url.indexOf("login.action")>=0) {
-			return true;
-		}
+//		String url = request.getRequestURI();
+//		if(url.indexOf("login.action")>=0) {
+//			return true;
+//		}
 		// determine session
 		HttpSession session = request.getSession();
 		String username = (String) session.getAttribute("username");
@@ -26,7 +26,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 			return true;
 		}
 		
-		request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
+		request.getRequestDispatcher("/WEB-INF/jsp/users/login.jsp").forward(request, response);
 		return false;
 	}
 	

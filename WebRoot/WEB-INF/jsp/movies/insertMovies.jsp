@@ -33,23 +33,30 @@ method="post" enctype="multipart/form-data">
 <tr>
 	<td>Genres</td>
 	<td>
-<%-- 		<form:checkbox path="genresArray" value="drama" />drama<br/>
-		<form:checkbox path="genresArray" value="comedy" />comedy<br/>
-		<form:checkbox path="genresArray" value="action" />action<br/>
-		<form:checkbox path="genresArray" value="crime" />crime<br/>
-		<form:checkbox path="genresArray" value="romance" />romance<br/>
-		<form:checkbox path="genresArray" value="lgbt" />LGBT<br/>
-		<form:checkbox path="genresArray" value="scifi" />Sci-Fi<br/>
-		<form:checkbox path="genresArray" value="thriller" />thriller<br/>
-		<form:checkbox path="genresArray" value="mystery" />mystery<br/>
-		<form:checkbox path="genresArray" value="fantasy" />fantasy<br/>
-		<form:checkbox path="genresArray" value="animation" />animation<br/>
-		<form:checkbox path="genresArray" value="adventure" />adventure<br/> --%>
-<%-- 		<form:checkboxes items="${allGenres }" path="genres_array" /> --%>
 		<c:forEach items="${allGenres }" var="genre">
 		<input type="checkbox" name="genres_array" value="${genre }"/>${genre }
 		</c:forEach>
 	</td>
+</tr>
+<tr>
+	<td>Cast(use comma to separate multiple inputs)</td>
+	<td>
+	Directors:<input type="text" name="directors" value="${moviesCustom.directors }"><br>
+	Writers:<input type="text" name="writers" value="${moviesCustom.writers }"><br>
+	Stars:<input type="text" name="stars" value="${moviesCustom.stars }"><br>
+	</td>
+</tr>
+<tr>
+<td>Also known as:(use comma to separate multiple inputs)</td>
+<td><input type="text" name="aka" value="${moviesCustom.aka }"></td>
+</tr>
+<tr>
+<td>Languages:(use comma to separate multiple inputs)</td>
+<td><input type="text" name="languages" value="${moviesCustom.languages }"></td>
+</tr>
+<tr>
+<td>Countries:(use comma to separate multiple inputs)</td>
+<td><input type="text" name="countries" value="${moviesCustom.countries }"></td>
 </tr>
 <tr>
 	<td>Poster</td>

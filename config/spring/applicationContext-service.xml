@@ -28,4 +28,6 @@
 <!-- reviews service -->
 <bean id="reviewsService" class="com.orangedietc.flim.service.impl.ReviewsServiceImpl" />
 
+<!-- comments service -->
+<bean id="commentsService" class="com.orangedietc.flim.service.impl.CommentsServiceImpl" />
 </beans>

@@ -38,6 +38,10 @@ Searching Results
 <th>Release Date</th>
 <th>IMDb Number</th>
 <th>Genres</th>
+<th>Cast</th>
+<th>Also Known as</th>
+<th>Languages</th>
+<th>Countries</th>
 <th>Poster</th>
 <th>Summary</th>
 <th>Operation</th>
@@ -58,9 +62,52 @@ Searching Results
 	<td>${movie.releaseDate }</td>
 	<td>${movie.imdbId }</td>
 	<td>
+		<c:if test="${movie.genresArray!=null }">
 		<c:forEach items="${movie.genresArray }" var="genre">
 			${genre } 
 		</c:forEach>
+		</c:if>
+	</td>
+	<td>
+	Directors:
+		<c:if test="${movie.directorsArray!=null }">
+		<c:forEach items="${movie.directorsArray }" var="director">
+			${director }
+		</c:forEach>
+		</c:if><br>
+	Writers:
+		<c:if test="${movie.writersArray!=null }">
+		<c:forEach items="${movie.writersArray }" var="writer">
+			${writer }
+		</c:forEach>
+		</c:if><br>
+	Actors:
+		<c:if test="${movie.starsArray!=null }">
+		<c:forEach items="${movie.starsArray }" var="star">
+			${star }
+		</c:forEach>
+		</c:if>
+	</td>
+	<td>
+		<c:if test="${movie.akaArray!=null }">
+		<c:forEach items="${movie.akaArray }" var="aka">
+			${aka }
+		</c:forEach>
+		</c:if>
+	</td>
+	<td>
+		<c:if test="${movie.languagesArray!=null }">
+		<c:forEach items="${movie.languagesArray }" var="language">
+			${language }
+		</c:forEach>
+		</c:if>
+	</td>
+	<td>
+		<c:if test="${movie.countriesArray!=null }">
+		<c:forEach items="${movie.countriesArray }" var="country">
+			${country }
+		</c:forEach>
+		</c:if>
 	</td>
 	<td>
 		<c:if test="${movie.poster != null }">
