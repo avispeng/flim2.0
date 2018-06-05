@@ -7,6 +7,17 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>${reviewsCustom.movieTitle } - ${reviewsCustom.reviewTitle }</title>
+<script type="text/javascript">
+function replyTo(commentId) {
+	document.getElementById("replyBlock").value = "Reply to floor " + commentId + ": ";
+	document.getElementById("replyBlock").scrollIntoView();
+}
+
+function submit() {
+	document.itemsForm.action="${pageContext.request.contextPath }/comments/addComment.action";
+	document.itemsForm.submit();
+}
+</script>
 </head>
 <body>
 <c:choose>
@@ -39,16 +50,17 @@ current user: ${username },
 	<td>${comment.floor }</td>
 	<td><a href="${pageContext.request.contextPath }/users/getHomePage.action?id=${comment.userid}">${comment.username }</a></td>
 	<td>${comment.timeStamp }</td>
+	<td><input type="button" value="reply" onclick="replyTo(${comment.floor})"></td>
 	</tr>
 	<tr>
 	<td><c:if test="${comment.replyTo!=null }">reply to floor ${comment.replyTo }</c:if></td>
-	<td colspan="2">${comment.content }</td>
+	<td colspan="3">${comment.content }</td>
 	</tr>
 </c:forEach>
 </c:if>
 
-<tr><td colspan="3"><textarea rows="10" cols="40" name="content">${commentsCustom.content }</textarea></td></tr>
-<tr><td colspan="3"><input type="submit" value="add comment"/></td></tr>
+<tr><td colspan="4"><textarea rows="10" cols="40" name="content" id="replyBlock">${commentsCustom.content }</textarea></td></tr>
+<tr><td colspan="4"><input type="button" value="submit comment" onclick="submit()"></td></tr>
 </table>
 </form>
 </body>
