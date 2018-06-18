@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,7 @@ public class UsersController {
 	}
 
 	@RequestMapping(value = "/registerSubmit", method = RequestMethod.POST)
-	public String registerSubmit(Model model, @Validated(value = { ValidGroup2.class }) UsersCustom usersCustom,
+	public String registerSubmit(Model model, @Valid UsersCustom usersCustom,
 			BindingResult bindingResult) throws Exception {
 		// validation
 		if (bindingResult.hasErrors()) {

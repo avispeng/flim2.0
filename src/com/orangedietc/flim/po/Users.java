@@ -2,6 +2,12 @@ package com.orangedietc.flim.po;
 
 import java.util.Date;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
+
 public class Users {
     /**
      *
@@ -19,6 +25,7 @@ public class Users {
      *
      * @mbg.generated Sat May 05 18:47:14 EDT 2018
      */
+    @NotBlank(message="username must not be empty")
     private String username;
 
     /**
@@ -46,6 +53,7 @@ public class Users {
      *
      * @mbg.generated Sat May 05 18:47:14 EDT 2018
      */
+    @Email(message="invalid email address")
     private String email;
 
     /**
@@ -73,6 +81,8 @@ public class Users {
      *
      * @mbg.generated Sat May 05 18:47:14 EDT 2018
      */
+    @Min(0)
+    @Max(2)
     private Integer gender;
 
     /**
@@ -82,6 +92,7 @@ public class Users {
      *
      * @mbg.generated Sat May 05 18:47:14 EDT 2018
      */
+    @Past(message="birthday must be in the past")
     private Date birthday;
 
     /**
