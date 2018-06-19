@@ -11,7 +11,7 @@ public interface MoviesService {
 	
 	public MoviesCustom findMovieById(Integer movieId) throws Exception;
 	
-	public void updateMovie(Integer movieId, MoviesCustom moviesCustom) throws Exception;
+	public void updateMovie(MoviesCustom moviesCustom) throws Exception;
 	
 	public void insertMovie(MoviesCustom moviesCustom) throws Exception;
 

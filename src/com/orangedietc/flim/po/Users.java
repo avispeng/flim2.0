@@ -7,6 +7,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 public class Users {
     /**
@@ -26,6 +28,8 @@ public class Users {
      * @mbg.generated Sat May 05 18:47:14 EDT 2018
      */
     @NotBlank(message="username must not be empty")
+    @Size(min=8, max=20, message="size of username must be between 8 and 20")
+    @Pattern(regexp = "\\w+", message="username only contains a-z, A-Z, 0-9, underscore")
     private String username;
 
     /**

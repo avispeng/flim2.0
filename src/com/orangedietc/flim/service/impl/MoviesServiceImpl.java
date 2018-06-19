@@ -44,15 +44,12 @@ public class MoviesServiceImpl implements MoviesService {
 	}
 
 	@Override
-	public void updateMovie(Integer movieId, MoviesCustom moviesCustom) throws Exception {
-		
-		moviesCustom.setMovieId(movieId);
+	public void updateMovie(MoviesCustom moviesCustom) throws Exception {
 		moviesMapper.updateByPrimaryKeyWithBLOBs(moviesCustom);
 	}
 
 	@Override
 	public void insertMovie(MoviesCustom moviesCustom) throws Exception {
-		
 		moviesMapper.insert(moviesCustom);
 	}
 

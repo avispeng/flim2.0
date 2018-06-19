@@ -43,7 +43,7 @@ Register
 </tr>
 <tr>
 <td>confirm password: </td>
-<td><input type="password" name="confirm_password" id="confirm_password" onkeyup='check();'/></td>
+<td><input type="password" name="confirm_password" id="confirm_password" onkeyup='check();' required/></td>
 </tr>
 <tr>
 <td>email address(optional): </td>

@@ -87,18 +87,35 @@ public class ReviewsController {
 			return "reviews/editReview";
 		}
 		
+		MoviesCustom moviesCustom = moviesService.findMovieById(reviewsCustom.getMovieId());
+		
 		if(reviewsCustom.getReviewId() == null) {
 			// add new review
 			reviewsCustom.setThumbUp(0);
 			reviewsCustom.setTimeStamp(new Date());
 			reviewsService.insertReview(reviewsCustom);
+			// add new rating, update movie's rating capita and sum
+			float ratingSum = moviesCustom.getRatingSum();
+			ratingSum += rating;
+			moviesCustom.setRatingSum(ratingSum);
+			int capita = moviesCustom.getRatingCapita();
+			capita++;
+			moviesCustom.setRatingCapita(capita);
+			moviesService.updateMovie(moviesCustom);
 		} else {
 			// edit existing review
 			ReviewsCustom reviewsCustomFromDB = reviewsService.findReviewById(reviewsCustom.getReviewId());
+			float originalRating = reviewsCustomFromDB.getRating();
+			float ratingSum = moviesCustom.getRatingSum();
+			ratingSum = ratingSum - originalRating + rating;
+			moviesCustom.setRatingSum(ratingSum);
+			moviesService.updateMovie(moviesCustom);
+			
 			reviewsCustomFromDB.setRating(rating);
 			reviewsCustomFromDB.setReviewTitle(reviewsCustom.getReviewTitle());
 			reviewsCustomFromDB.setReview(reviewsCustom.getReview());
 			reviewsService.updateReview(reviewsCustomFromDB);
+			
 		}
 		return "redirect:/movies/getMovie.action?id="+reviewsCustom.getMovieId();
 	}

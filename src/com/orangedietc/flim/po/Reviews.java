@@ -2,6 +2,10 @@ package com.orangedietc.flim.po;
 
 import java.util.Date;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 public class Reviews {
     /**
      *
@@ -82,6 +86,9 @@ public class Reviews {
      *
      * @mbg.generated Wed Apr 25 09:48:57 EDT 2018
      */
+    @NotNull(message="rating cannot be null")
+    @Min(0)
+    @Max(10)
     private Float rating;
 
     /**

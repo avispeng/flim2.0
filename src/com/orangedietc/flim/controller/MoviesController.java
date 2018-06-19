@@ -191,6 +191,10 @@ public class MoviesController {
 		String genresJsonArray = objectMapper.writeValueAsString(genres_array);
 		moviesCustom.setGenres(genresJsonArray);
 		
+		// initialize movie's rating capita and sum
+		moviesCustom.setRatingCapita(0);
+		moviesCustom.setRatingSum(0F);
+		
 		moviesService.insertMovie(moviesCustom);
 		
 		return "success";
@@ -213,6 +217,12 @@ public class MoviesController {
 		if(moviesCustom == null) {
 			throw new CustomException("The movie doesn't exist!");
 		}
+		
+		// update its rating
+		float ratingSum = moviesCustom.getRatingSum();
+		float ratingCapita = moviesCustom.getRatingCapita();
+		moviesCustom.setRating(ratingSum / ratingCapita);
+		moviesService.updateMovie(moviesCustom);
 		
 		// get logged-in user's review
 		String username = (String) session.getAttribute("username");

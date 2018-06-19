@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS reviews (
   `review` text NOT NULL,
   `thumb_up` int(11) NOT NULL,
   `time_stamp` datetime NOT NULL,
-  `rating` float DEFAULT NULL,
+  `rating` float NOT NULL,
   PRIMARY KEY (`review_id`)
 );
 
@@ -46,8 +46,8 @@ CREATE TABLE IF NOT EXISTS movies
   `genres` json DEFAULT NULL,
   `poster` varchar(512) DEFAULT NULL,
   `summary` text,
-  `rating_capita` int(11) DEFAULT NULL,
-  `rating_sum` float DEFAULT NULL,
+  `rating_capita` int(11) NOT NULL,
+  `rating_sum` float NOT NULL,
   PRIMARY KEY (`movie_id`)
 );
 
